@@ -1,66 +1,75 @@
-# lagervewaltung
+# MongoDB_Test Projekt
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+## Überblick
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+Das MongoDB_Test Projekt ist eine Java-basierte Anwendung, die eine REST-API zur Verwaltung von Inventargegenständen bereitstellt. Es nutzt Quarkus, das Supersonic Subatomic Java Framework, um eine effiziente und leichtgewichtige Anwendung zu erstellen. Die Anwendung integriert MongoDB Atlas als Datenbankdienst, um die Persistenz der Inventardaten in der Cloud zu gewährleisten.
 
-## Running the application in dev mode
+## Funktionen
 
-You can run your application in dev mode that enables live coding using:
+- **CRUD-Operationen**: Die API unterstützt das Erstellen, Lesen, Aktualisieren und Löschen von Inventargegenständen.
+- **MongoDB Atlas Integration**: Nutzt MongoDB Atlas für die Speicherung und Abfrage von Inventardaten in der Cloud.
 
-```shell script
-./mvnw compile quarkus:dev
-```
+## API-Endpunkte
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
+Die Anwendung definiert folgende REST-Endpunkte:
 
-## Packaging and running the application
+- `GET /items`: Listet alle Inventargegenstände auf.
+- `POST /items`: Erstellt einen neuen Inventargegenstand.
+- `GET /items/{id}`: Ruft einen spezifischen Inventargegenstand ab.
+- `PUT /items/{id}`: Aktualisiert einen bestehenden Inventargegenstand.
+- `DELETE /items/{id}`: Löscht einen spezifischen Inventargegenstand.
 
-The application can be packaged using:
+## MongoDB Atlas-Implementierung
 
-```shell script
-./mvnw package
-```
+Die Anwendung verwendet das `ItemRepo`-Repository, um mit der MongoDB Atlas-Datenbank zu interagieren. Die `InventoryItem`-Klasse definiert das Schema der Inventargegenstände, einschließlich Felder wie ID, Name und Menge. Die Konfiguration für die MongoDB Atlas-Verbindung wird in der `application.properties`-Datei festgelegt. Du musst deine Atlas-Verbindungszeichenfolge dort entsprechend konfigurieren.
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+## Voraussetzungen
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+- Java 11 oder höher
+- Maven
+- MongoDB Atlas-Konto und eine konfigurierte Datenbank
 
-If you want to build an _über-jar_, execute the following command:
+## Lokales Setup
 
-```shell script
-./mvnw package -Dquarkus.package.type=uber-jar
-```
+1. Klone das Repository und navigiere in das Projektverzeichnis:
+   ```
+   git clone https://github.com/EpicSamuray/MongoDB_Test.git
+   cd MongoDB_Test
+   ```
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+2. Konfiguriere die MongoDB Atlas-Verbindungszeichenfolge in `src/main/resources/application.properties`. Du findest diese in deinem MongoDB Atlas-Dashboard unter dem Bereich "Connect your application".
 
-## Creating a native executable
+3. Baue und starte die Anwendung:
+   ```
+   ./mvnw compile quarkus:dev
+   ```
 
-You can create a native executable using:
+## Testen der API mit HTTPie
 
-```shell script
-./mvnw package -Dnative
-```
+Installiere HTTPie, falls noch nicht geschehen: https://httpie.io/
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
+Beispielbefehle zum Testen der API:
 
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
+- **Liste aller Inventargegenstände**:
+  ```
+  http GET localhost:8080/items
+  ```
 
-You can then execute your native executable with: `./target/lagervewaltung-1.0-SNAPSHOT-runner`
+- **Erstellen eines neuen Inventargegenstands**:
+  ```
+  http POST localhost:8080/items name='Neuer Gegenstand' quantity=10
+  ```
 
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.
+- **Aktualisieren eines Inventargegenstands**:
+  ```
+  http PUT localhost:8080/items/{id} name='Aktualisierter Gegenstand' quantity=15
+  ```
 
-## Related Guides
+- **Löschen eines Inventargegenstands**:
+  ```
+  http DELETE localhost:8080/items/{id}
+  ```
 
-- MongoDB client ([guide](https://quarkus.io/guides/mongodb)): Connect to MongoDB in either imperative or reactive style
+## Hinweise
 
-## Provided Code
-
-### RESTEasy JAX-RS
-
-Easily start your RESTful Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started#the-jax-rs-resources)
+Da MongoDB Atlas in der Cloud läuft, ist keine spezifische Docker-Konfiguration für die Datenbank erforderlich. Stelle sicher, dass deine Anwendung korrekt konfiguriert ist, um sich mit deiner MongoDB Atlas-Instanz zu verbinden.
