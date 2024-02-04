@@ -9,67 +9,88 @@ Das MongoDB_Test Projekt ist eine Java-basierte Anwendung, die eine REST-API zur
 - **CRUD-Operationen**: Die API unterstützt das Erstellen, Lesen, Aktualisieren und Löschen von Inventargegenständen.
 - **MongoDB Atlas Integration**: Nutzt MongoDB Atlas für die Speicherung und Abfrage von Inventardaten in der Cloud.
 
-## API-Endpunkte
+## API-Endpunkte und Responses
 
-Die Anwendung definiert folgende REST-Endpunkte:
+Die `InventoryItem`-Objekte haben die folgenden Attribute: `name`, `price`, `quantity`, und `location`. Die `id` wird automatisch von MongoDB als `ObjectId` generiert.
 
-- `GET /items`: Listet alle Inventargegenstände auf.
-- `POST /items`: Erstellt einen neuen Inventargegenstand.
-- `GET /items/{id}`: Ruft einen spezifischen Inventargegenstand ab.
-- `PUT /items/{id}`: Aktualisiert einen bestehenden Inventargegenstand.
-- `DELETE /items/{id}`: Löscht einen spezifischen Inventargegenstand.
+### `GET /items`
+- **Beschreibung**: Listet alle Inventargegenstände auf.
+- **Response**: Eine Liste von Inventargegenständen. Jeder Gegenstand wird als JSON-Objekt dargestellt, das Felder wie `id`, `name`, `price`, `quantity`, und `location` enthält.
 
-## MongoDB Atlas-Implementierung
+### `POST /items`
+- **Beschreibung**: Erstellt einen neuen Inventargegenstand.
+- **Body**: `{ "name": "Neuer Gegenstand", "price": 20.5, "quantity": 10, "location": "Lager A" }`
+- **Response**: Das erstellte Inventarobjekt, einschließlich seiner `id`.
 
-Die Anwendung verwendet das `ItemRepo`-Repository, um mit der MongoDB Atlas-Datenbank zu interagieren. Die `InventoryItem`-Klasse definiert das Schema der Inventargegenstände, einschließlich Felder wie ID, Name und Menge. Die Konfiguration für die MongoDB Atlas-Verbindung wird in der `application.properties`-Datei festgelegt. Du musst deine Atlas-Verbindungszeichenfolge dort entsprechend konfigurieren.
+### `GET /items/{id}`
+- **Beschreibung**: Ruft einen spezifischen Inventargegenstand ab.
+- **Response**: Das Inventarobjekt, das der angegebenen `id` entspricht.
 
-## Voraussetzungen
+### `PUT /items/{id}`
+- **Beschreibung**: Aktualisiert einen bestehenden Inventargegenstand.
+- **Body**: `{ "name": "Aktualisierter Gegenstand", "price": 25.0, "quantity": 15, "location": "Lager B" }`
+- **Response**: Das aktualisierte Inventarobjekt.
 
-- Java 11 oder höher
-- Maven
-- MongoDB Atlas-Konto und eine konfigurierte Datenbank
+### `DELETE /items/{id}`
+- **Beschreibung**: Löscht einen spezifischen Inventargegenstand.
+- **Response**: Eine Bestätigung, dass der Gegenstand gelöscht wurde.
 
-## Lokales Setup
+## Verbindung zu MongoDB Atlas
 
-1. Klone das Repository und navigiere in das Projektverzeichnis:
-   ```
-   git clone https://github.com/EpicSamuray/MongoDB_Test.git
-   cd MongoDB_Test
-   ```
+Die Anwendung verbindet sich mit MongoDB Atlas über die Konfigurationseinstellungen in der `application.properties`-Datei. Um die Verbindung zu MongoDB Atlas herzustellen, musst du die Verbindungszeichenfolge (URI) in der `application.properties`-Datei deiner Anwendung konfigurieren:
 
-2. Konfiguriere die MongoDB Atlas-Verbindungszeichenfolge in `src/main/resources/application.properties`. Du findest diese in deinem MongoDB Atlas-Dashboard unter dem Bereich "Connect your application".
+```
+quarkus.mongodb.connection-string=mongodb+srv://<username>:<password>@<cluster-address>/<database>?retryWrites=true&w=majority
+```
 
-3. Baue und starte die Anwendung:
-   ```
-   ./mvnw compile quarkus:dev
-   ```
+Ersetze `<username>`, `<password>`, `<cluster-address>` und `<database>` durch deine tatsächlichen MongoDB Atlas-Anmeldedaten und Datenbankinformationen.
+
+## Optionales lokales Setup
+
+Standardmäßig ist die Anwendung so konfiguriert, dass sie mit einer MongoDB Atlas-Instanz verbunden ist. Wenn du jedoch ein eigenes lokales Setup aufbauen möchtest, folge den Anweisungen im Abschnitt "Verbindung zu MongoDB Atlas".
 
 ## Testen der API mit HTTPie
 
 Installiere HTTPie, falls noch nicht geschehen: https://httpie.io/
 
-Beispielbefehle zum Testen der API:
+Beim Testen der API mit HTTPie musst du den `Content-Type`-Header auf `application/json` setzen. Hier sind aktualisierte Beispiele, wie du die verschiedenen Endpunkte der API aufrufen kannst:
 
-- **Liste aller Inventargegenstände**:
-  ```
-  http GET localhost:8080/items
-  ```
+### Liste aller Inventargegenstände
 
-- **Erstellen eines neuen Inventargegenstands**:
-  ```
-  http POST localhost:8080/items name='Neuer Gegenstand' quantity=10
-  ```
+```sh
+http GET localhost:8080/items
+```
 
-- **Aktualisieren eines Inventargegenstands**:
-  ```
-  http PUT localhost:8080/items/{id} name='Aktualisierter Gegenstand' quantity=15
-  ```
+### Erstellen eines neuen Inventargegenstands
 
-- **Löschen eines Inventargegenstands**:
-  ```
-  http DELETE localhost:8080/items/{id}
-  ```
+```sh
+http POST localhost:8080/items \
+Content-Type:application/json \
+name='Neuer Gegenstand' \
+price:=20.5 \
+quantity:=10 \
+location='Lager A'
+```
 
-## Hinweise
+### Ruft einen spezifischen Inventargegenstand ab
 
-Da MongoDB Atlas in der Cloud läuft, ist keine spezifische Docker-Konfiguration für die Datenbank erforderlich. Stelle sicher, dass deine Anwendung korrekt konfiguriert ist, um sich mit deiner MongoDB Atlas-Instanz zu verbinden.
+```sh
+http GET localhost:8080/items/{id}
+```
+
+### Aktualisiert einen bestehenden Inventargegenstand
+
+```sh
+http PUT localhost:8080/items/{id} \
+Content-Type:application/json \
+name='Aktualisierter Gegenstand' \
+price:=25.0 \
+quantity:=15 \
+location='Lager B'
+```
+
+### Löscht einen spezifischen Inventargegenstand
+
+```sh
+http DELETE localhost:8080/items/{id}
+```
