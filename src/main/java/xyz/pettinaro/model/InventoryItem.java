@@ -2,6 +2,7 @@ package xyz.pettinaro.model;
 
 import io.quarkus.mongodb.panache.PanacheMongoEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
+
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
@@ -12,12 +13,19 @@ public class InventoryItem extends PanacheMongoEntity {
 
     @BsonProperty("name")
     private String name;
+    
     @BsonProperty("price")
     private double price;
+    
     @BsonProperty("quantity")
     private int quantity;
+    
     @BsonProperty("location")
     private String location;
+
+    @BsonProperty("validated")
+    private boolean isValidated;
+
     public InventoryItem() {
 
     }
@@ -28,14 +36,6 @@ public class InventoryItem extends PanacheMongoEntity {
         this.price = price;
         this.quantity = quantity;
         this.location = location;
-    }
-
-    public ObjectId getId() {
-        return id;
-    }
-
-    public void setId(ObjectId id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -68,6 +68,14 @@ public class InventoryItem extends PanacheMongoEntity {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public void setValidated(boolean validated) {
+        this.isValidated = validated;
+    }
+
+    public boolean isValidated() {
+        return this.isValidated;
     }
 
     @Override

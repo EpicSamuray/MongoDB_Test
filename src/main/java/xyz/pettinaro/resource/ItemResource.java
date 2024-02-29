@@ -4,9 +4,11 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import org.bson.types.ObjectId;
+import org.jboss.logging.Logger;
+
 import xyz.pettinaro.model.InventoryItem;
 import xyz.pettinaro.repository.ItemRepo;
-
+import xyz.pettinaro.services.ItemService;
 
 import java.util.List;
 
@@ -16,10 +18,18 @@ public class ItemResource {
     @Inject
     ItemRepo invItemRepo;
 
+    @Inject
+    ItemService itemService;
+
+    private static final Logger LOG = Logger.getLogger(ItemResource.class);
+
     @POST
     public Response createItem(InventoryItem item) {
+        item.id = new ObjectId();
+        LOG.info("Creating new item: " + item.id);
         invItemRepo.persist(item);
         if (invItemRepo.isPersistend(item.id)){
+            itemService.sendItemForValidation(item.id);
             return Response.ok(item).build();
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
