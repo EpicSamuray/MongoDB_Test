@@ -24,7 +24,7 @@ public class InventoryItem extends PanacheMongoEntity {
     private String location;
 
     @BsonProperty("validated")
-    private boolean isValidated;
+    private String validation;
 
     public InventoryItem() {
 
@@ -70,12 +70,12 @@ public class InventoryItem extends PanacheMongoEntity {
         this.location = location;
     }
 
-    public void setValidated(boolean validated) {
-        this.isValidated = validated;
+    public void setValidation(String validated) {
+        this.validation = validated;
     }
 
-    public boolean isValidated() {
-        return this.isValidated;
+    public String isValidation() {
+        return this.validation;
     }
 
     @Override
