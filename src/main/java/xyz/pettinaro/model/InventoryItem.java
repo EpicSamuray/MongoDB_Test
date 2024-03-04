@@ -24,18 +24,19 @@ public class InventoryItem extends PanacheMongoEntity {
     private String location;
 
     @BsonProperty("validated")
-    private String validation;
+    private boolean validation;
 
     public InventoryItem() {
 
     }
 
-    public InventoryItem(ObjectId id, String name, double price, int quantity, String location) {
+    public InventoryItem(ObjectId id, String name, double price, int quantity, String location, boolean validated) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.quantity = quantity;
         this.location = location;
+        this.validation = validated;
     }
 
     public String getName() {
@@ -70,11 +71,11 @@ public class InventoryItem extends PanacheMongoEntity {
         this.location = location;
     }
 
-    public void setValidation(String validated) {
+    public void setValidation(boolean validated) {
         this.validation = validated;
     }
 
-    public String isValidation() {
+    public boolean isValidation() {
         return this.validation;
     }
 

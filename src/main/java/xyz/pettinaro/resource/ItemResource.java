@@ -79,4 +79,11 @@ public class ItemResource {
         }
     }
 
+    @DELETE
+    @Path("/clear")
+    public Response deleteAll() {
+        invItemRepo.deleteAll();
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
 }
